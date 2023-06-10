@@ -3,6 +3,8 @@ const app = express();
 const mongoose = require("mongoose");
 require('dotenv').config()
 
+  const productRouter =require('./routes/index.js')
+
 const PORT = process.env.PORT || 8000;
 const bodyParser = require('body-parser')
 
@@ -23,6 +25,9 @@ mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
 
 //For Reading JSON format 
 app.use(express.json());
+
+// app.use(bodyParser.json());
+app.use("/", productRouter);
 
 
 

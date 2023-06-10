@@ -1,6 +1,8 @@
+const mongoDB = require('mongodb');
 
 
 const Product = require('../models/product_db');
+
 
 
 // controller for showing all products if there there are zero product in database it will show  'No product found'
@@ -8,20 +10,20 @@ module.exports.index = async function(req,res){
 
     try{
         console.log("Showing product");
-        const products = await Product.find({})
+        const product = await Product.find({})
 
       
 
-        if(products.length<1){
+        if(product.length<1){
             res.status(200).json({
                 message: 'No product found'
             })
             return
         }
 
-        if(products){
+        if(product){
             res.status(200).json({
-                data: products
+                data: product
             })
         }
         
@@ -39,7 +41,13 @@ module.exports.index = async function(req,res){
 //  Controller for deleting a product with help of product id
 
 module.exports.deleteProduct = async function(req,res){
-    try{
+    try {
+    // //     const id = req.params.id;
+    // //   var o_id = new mongoDB.ObjectID(id);
+    // const ID = req.params.productID;
+    const {
+        id: productID
+    }=req.params
         let products = await Product.findById(req.params.id);
 
         if(!products){
@@ -48,7 +56,7 @@ module.exports.deleteProduct = async function(req,res){
             })
         }
 
-        products.remove();
+        products.deleteOne();
 
         return res.status(200).json({
             message:"product deleted"
@@ -56,7 +64,7 @@ module.exports.deleteProduct = async function(req,res){
 
 
     }catch(err){
-
+        console.log(err);
         res.status(404).json({
             message: "There was an error in finding products"
         })
@@ -66,6 +74,7 @@ module.exports.deleteProduct = async function(req,res){
 }
 
 
+
 //  Controller for adding a new product in database 
 
 module.exports.addProduct = async function(req,res){
@@ -73,13 +82,13 @@ module.exports.addProduct = async function(req,res){
 
    
         console.log("adding product");
-        let product = await Product.create(req.body);
+        const product = await Product.create(req.body);
+        // var product = new Product();
+        // product.name = req.body.name;
+        // product.quantity=req.body.quantity
+
         // let result = await product.save();
-        res.status(201).json({    // response code 201 for created 
-            data:{
-                product
-            }
-        })
+        res.status(201).json(product);
 
     }catch(err){
 
